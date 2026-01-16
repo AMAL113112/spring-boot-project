@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Admin | Order Details</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+    padding: 20px;
+}
+
+h2 {
+    margin-bottom: 10px;
+}
+
+.info {
+    background: white;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+}
+
+.section-title {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+table {
+    width: 100%;
+    background: white;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+}
+
+th {
+    background-color: #2c3e50;
+    color: white;
+}
+
+img {
+    width: 70px;
+    border-radius: 4px;
+}
+
+.status {
+    font-weight: bold;
+}
+
+.pending { color: orange; }
+.delivered { color: green; }
+.cancelled { color: red; }
+
+.back {
+    display: inline-block;
+    margin-top: 20px;
+    font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<h2>Order Details</h2>
+
+<!-- ========================= -->
+<!-- ORDER INFO -->
+<!-- ========================= -->
+<div class="info">
+    <p><strong>Order ID:</strong> <span th:text="${order.id}"></span></p>
+
+    <p><strong>User:</strong>
+        <span th:text="${order.user.username}"></span>
+    </p>
+
+    <p>
+        <strong>Date:</strong>
+        <span th:text="${#temporals.format(order.createdAt, 'dd-MM-yyyy HH:mm')}"></span>
+    </p>
+
+    <p>
+        <strong>Status:</strong>
+        <span class="status"
+              th:text="${order.status}"
+              th:classappend="
+                ${order.status} == 'PENDING' ? 'pending' :
+                (${order.status} == 'PLACED' ? 'pending' :
+                (${order.status} == 'DELIVERED' ? 'delivered' : 'cancelled'))
+              ">
+        </span>
+    </p>
+
+    <p>
+        <strong>Total Amount:</strong>
+        ₹<span th:text="${displayTotal}"></span>
+    </p>
+</div>
+
+<!-- ========================= -->
+<!-- DELIVERY DETAILS -->
+<!-- ========================= -->
+<div class="info">
+    <div class="section-title">Delivery Details</div>
+
+    <p>
+        <strong>Customer Name:</strong>
+        <span th:text="${order.customerName}"></span>
+    </p>
+
+    <p>
+        <strong>Phone:</strong>
+        <span th:text="${order.phone}"></span>
+    </p>
+
+    <p>
+        <strong>Address:</strong>
+        <span th:text="${order.address}"></span>
+    </p>
+
+    <p>
+        <strong>Payment Method:</strong>
+        <span th:text="${order.paymentMethod}"></span>
+    </p>
+</div>
+
+<!-- ========================= -->
+<!-- ORDER ITEMS -->
+<!-- ========================= -->
+<table>
+    <tr>
+        <th>Product</th>
+        <th>Image</th>
+        <th>Price</th>
+        <th>Qty</th>
+        <th>Total</th>
+    </tr>
+
+    <tr th:each="item : ${items}">
+        <td th:text="${item.product.name}"></td>
+
+        <td>
+            <img th:src="@{/uploads/{img}(img=${item.product.imageName})}">
+        </td>
+
+        <td>₹<span th:text="${item.price}"></span></td>
+
+        <td th:text="${item.quantity}"></td>
+
+        <td>₹<span th:text="${item.totalPrice}"></span></td>
+    </tr>
+</table>
+
+<a class="back" th:href="@{/admin/orders}">
+    ← Back to Orders
+</a>
+
+</body>
+</html>

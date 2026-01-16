@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>My Orders | ShopEase</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f6f8;
+    padding: 20px;
+}
+
+h2 {
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+    background: white;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+}
+
+th {
+    background-color: #2c3e50;
+    color: white;
+}
+
+.status {
+    font-weight: bold;
+}
+
+.PENDING { color: orange; }
+.PLACED { color: blue; }
+.DELIVERED { color: green; }
+.CANCELLED { color: red; }
+
+a {
+    text-decoration: none;
+    color: #2c3e50;
+    font-weight: bold;
+}
+
+.empty {
+    padding: 20px;
+    text-align: center;
+}
+
+.back {
+    display: inline-block;
+    margin-top: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>📦 My Orders</h2>
+
+<table>
+    <tr>
+        <th>Order ID</th>
+        <th>Date</th>
+        <th>Total (₹)</th>
+        <th>Status</th>
+        <th>Details</th>
+    </tr>
+
+    <!-- EMPTY STATE -->
+    <tr th:if="${#lists.isEmpty(orders)}">
+        <td colspan="5" class="empty">
+            You haven’t placed any orders yet 🛒
+        </td>
+    </tr>
+
+    <!-- ORDERS -->
+    <tr th:each="order : ${orders}">
+        <td th:text="${order.id}"></td>
+
+        <td th:text="${#temporals.format(order.createdAt, 'dd MMM yyyy HH:mm')}"></td>
+
+        <td>₹<span th:text="${order.totalAmount}"></span></td>
+
+        <td class="status"
+            th:text="${order.status}"
+            th:classappend="${order.status}">
+        </td>
+
+        <td>
+            <a th:href="@{/orders/{id}(id=${order.id})}">
+                View
+            </a>
+        </td>
+    </tr>
+</table>
+
+<a class="back" th:href="@{/}">
+    ← Continue Shopping
+</a>
+
+</body>
+</html>

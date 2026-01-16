@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="UTF-8">
+<title>Admin | Orders</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f6f8;
+    padding: 20px;
+}
+
+h2 {
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+    background: white;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+}
+
+th {
+    background-color: #2c3e50;
+    color: white;
+}
+
+.status {
+    font-weight: bold;
+}
+
+.PENDING { color: orange; }
+.PLACED { color: blue; }
+.DELIVERED { color: green; }
+.CANCELLED { color: red; }
+
+select {
+    padding: 5px;
+}
+
+button {
+    padding: 6px 10px;
+    cursor: pointer;
+}
+
+a {
+    text-decoration: none;
+    color: #2c3e50;
+    font-weight: bold;
+}
+
+.back {
+    display: inline-block;
+    margin-top: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>📦 Admin – All Orders</h2>
+
+<table>
+    <tr>
+        <th>Order ID</th>
+        <th>User</th>
+        <th>Date</th>
+        <th>Total (₹)</th>
+        <th>Status</th>
+        <th>Action</th>
+        <th>View / Delete</th>
+    </tr>
+
+    <!-- EMPTY STATE -->
+    <tr th:if="${#lists.isEmpty(orders)}">
+        <td colspan="7">No orders found</td>
+    </tr>
+
+    <!-- ORDERS -->
+    <tr th:each="order : ${orders}">
+        <td th:text="${order.id}"></td>
+
+        <td th:text="${order.user.username}"></td>
+
+        <td th:text="${#temporals.format(order.createdAt, 'dd-MM-yyyy HH:mm')}"></td>
+
+        <td>₹<span th:text="${order.totalAmount}"></span></td>
+
+        <td class="status"
+            th:text="${order.status}"
+            th:classappend="${order.status}">
+        </td>
+
+        <!-- STATUS UPDATE -->
+        <td>
+            <form th:action="@{/admin/orders/update-status}" method="post">
+
+                <!-- CSRF -->
+                <input type="hidden"
+                       th:name="${_csrf.parameterName}"
+                       th:value="${_csrf.token}" />
+
+                <input type="hidden"
+                       name="orderId"
+                       th:value="${order.id}" />
+
+                <select name="status">
+                    <option value="PENDING" th:selected="${order.status == 'PENDING'}">PENDING</option>
+                    <option value="PLACED" th:selected="${order.status == 'PLACED'}">PLACED</option>
+                    <option value="DELIVERED" th:selected="${order.status == 'DELIVERED'}">DELIVERED</option>
+                    <option value="CANCELLED" th:selected="${order.status == 'CANCELLED'}">CANCELLED</option>
+                </select>
+
+                <button type="submit">Update</button>
+            </form>
+        </td>
+
+        <!-- VIEW + DELETE -->
+        <td>
+            <!-- VIEW -->
+            <a th:href="@{/admin/orders/{id}(id=${order.id})}">
+                View
+            </a>
+
+            <!-- DELETE -->
+            <form th:action="@{/admin/orders/delete}"
+                  method="post"
+                  style="display:inline;"
+                  onsubmit="return confirm('Delete this order permanently?');">
+
+                <!-- CSRF -->
+                <input type="hidden"
+                       th:name="${_csrf.parameterName}"
+                       th:value="${_csrf.token}" />
+
+                <input type="hidden"
+                       name="orderId"
+                       th:value="${order.id}" />
+
+                <button type="submit"
+                        style="margin-left:8px; color:red;">
+                    Delete
+                </button>
+            </form>
+        </td>
+    </tr>
+</table>
+
+<a class="back" th:href="@{/}">
+    ← Back to Home
+</a>
+
+</body>
+</html>

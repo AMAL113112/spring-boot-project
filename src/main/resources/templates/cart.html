@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>My Cart</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #f4f6f8;
+    padding: 20px;
+}
+table {
+    width: 100%;
+    background: white;
+    border-collapse: collapse;
+}
+th, td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+}
+img {
+    width: 80px;
+    border-radius: 4px;
+}
+.total {
+    text-align: right;
+    margin-top: 20px;
+    font-size: 18px;
+}
+button {
+    padding: 5px 10px;
+    cursor: pointer;
+}
+.remove {
+    color: red;
+    text-decoration: none;
+}
+</style>
+</head>
+
+<body>
+
+<h2>🛒 My Cart</h2>
+
+<table>
+    <tr>
+        <th>Product</th>
+        <th>Image</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th>Total</th>
+        <th>Action</th>
+    </tr>
+
+    <!-- ✅ EMPTY CART MESSAGE -->
+    <tr th:if="${#lists.isEmpty(cartItems)}">
+        <td colspan="6">Your cart is empty 🛒</td>
+    </tr>
+
+    <!-- ✅ CART ITEMS -->
+    <tr th:each="item : ${cartItems}">
+        <td th:text="${item.product.name}"></td>
+
+        <td>
+            <img th:src="@{/uploads/{img}(img=${item.product.imageName})}">
+        </td>
+
+        <td>₹<span th:text="${item.product.price}"></span></td>
+
+        <td>
+            <form th:action="@{/cart/update}" method="post">
+                <input type="hidden" name="itemId" th:value="${item.id}">
+                <input type="number" name="quantity"
+                       th:value="${item.quantity}" min="1">
+                <button type="submit">Update</button>
+            </form>
+        </td>
+
+        <td>₹<span th:text="${item.totalPrice}"></span></td>
+
+        <td>
+            <a class="remove"
+               th:href="@{/cart/remove/{id}(id=${item.id})}"
+               onclick="return confirm('Remove this item?')">
+                Remove
+            </a>
+        </td>
+    </tr>
+</table>
+
+<div class="total">
+    <strong>Grand Total: ₹<span th:text="${total}"></span></strong>
+</div>
+
+<br>
+
+<a th:href="@{/}">← Continue Shopping</a>
+
+</body>
+</html>

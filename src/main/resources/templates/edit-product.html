@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Product</title>
+
+    <style>
+        body {
+            background: #f4f6f8;
+            font-family: Arial, sans-serif;
+        }
+
+        .box {
+            width: 400px;
+            margin: 50px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 6px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        input, textarea, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        img {
+            display: block;
+            margin: 10px auto;
+            border-radius: 4px;
+        }
+
+        button {
+            background: #3498db;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h2>Edit Product</h2>
+
+    <form th:action="@{/admin/update-product}"
+          th:object="${product}"
+          method="post"
+          enctype="multipart/form-data">
+
+        <input type="hidden" th:field="*{id}">
+
+        <input type="text" th:field="*{name}" placeholder="Name" required>
+
+        <input type="number" step="0.01" th:field="*{price}" placeholder="Price" required>
+
+        <input type="number" th:field="*{quantity}" placeholder="Quantity" required>
+
+        <textarea th:field="*{description}" placeholder="Description"></textarea>
+
+        <!-- CURRENT IMAGE -->
+        <img th:src="@{/uploads/{img}(img=${product.imageName})}" width="150">
+
+        <!-- NEW IMAGE -->
+        <input type="file" name="image">
+
+        <button type="submit">Update Product</button>
+    </form>
+</div>
+
+</body>
+</html>
