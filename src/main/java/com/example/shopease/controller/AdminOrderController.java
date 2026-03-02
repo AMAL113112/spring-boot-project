@@ -49,10 +49,10 @@ public class AdminOrderController {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
-        // ✅ FETCH ONLY THIS ORDER'S ITEMS
+        //  FETCH ONLY THIS ORDER'S ITEMS
         List<OrderItem> items = orderItemRepository.findByOrder(order);
 
-        // ✅ CALCULATE TOTAL FOR THIS ORDER ONLY
+        //  CALCULATE TOTAL FOR THIS ORDER ONLY
         double displayTotal = items.stream()
                 .mapToDouble(OrderItem::getTotalPrice)
                 .sum();
