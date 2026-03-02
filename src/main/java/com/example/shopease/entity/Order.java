@@ -48,7 +48,7 @@ public class Order {
     private String paymentMethod; // COD, UPI, CARD
 
     // =========================
-    // ORDER ITEMS (🔥 CRITICAL FIX)
+    // ORDER ITEMS ( CRITICAL FIX)
     // =========================
     @OneToMany(
         mappedBy = "order",
